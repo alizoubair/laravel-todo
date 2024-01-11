@@ -1,0 +1,43 @@
+version: "2"
+services:
+  www:
+    build: .
+    ports: 
+      - "8001:80"
+    links:
+      - db
+    networks:
+      - fullstack
+  db:
+    image: mysql:5.7.13
+    container_name: mysql
+    environment:
+      MYSQL_DATABASE: MyDataBase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: test
+      MYSQL_ROOT_PASSWORD: test
+    ports:
+      - "3306:3306"
+    volumes:
+      - persistent:/var/lib/mysql
+    networks:
+      - fullstack
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links: 
+        - db:db
+    ports:
+      - "8000:80"
+    environment:
+        MYSQL_USER: user
+        MYSQL_PASSWORD: test
+        MYSQL_ROOT_PASSWORD: test
+    networks:
+      - fullstack
+
+volumes:
+  persistent:
+
+networks:
+  fullstack:
+    driver: bridge
